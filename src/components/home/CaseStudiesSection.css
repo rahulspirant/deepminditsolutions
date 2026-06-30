@@ -1,0 +1,293 @@
+/* ==========================================================================
+   CaseStudiesSection.css
+   Deep Mind IT Solutions — "Selected Engagement Highlights"
+
+   Token system
+   ------------
+   Surface (base):     #0B0E14
+   Surface (card):      #12161F
+   Hairline:            #232A38
+   Text (primary):      #E6E9F0
+   Text (muted):        #8993A8
+   Accent (signal):     #4D8FFF  -- challenge / network status
+   Accent (resolve):    #8B7CF6  -- solution
+   Accent (outcome):    #3DD9B4  -- outcome / success
+   ========================================================================== */
+
+.dm-section {
+  position: relative;
+  background-color: #0b0e14;
+  padding: 6rem 1.5rem;
+  color: #e6e9f0;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  overflow: hidden;
+}
+
+.dm-section::before {
+  content: "";
+  position: absolute;
+  inset: auto -10% -25% auto;
+  width: 72%;
+  height: 60%;
+  display: none;
+}
+
+@keyframes case-wave {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.6; }
+  50% { transform: translate(-16px, -10px) scale(1.06); opacity: 0.95; }
+}
+
+.dm-container {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+/* ---------------------------------- Heading ---------------------------------- */
+
+.dm-section-head {
+  max-width: 720px;
+  margin-bottom: 3.5rem;
+}
+
+.dm-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #4d8fff;
+  margin-bottom: 1rem;
+}
+
+.dm-eyebrow::before {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #4d8fff;
+  box-shadow: 0 0 8px 1px rgba(77, 143, 255, 0.85);
+}
+
+.dm-title {
+  font-family: "Space Grotesk", "Inter", system-ui, sans-serif;
+  font-weight: 600;
+  font-size: clamp(1.9rem, 3.4vw, 2.75rem);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: #f4f6fb;
+  margin-bottom: 1.1rem;
+}
+
+.dm-description {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #8993a8;
+  max-width: 640px;
+}
+
+/* ----------------------------------- Grid ------------------------------------ */
+
+.dm-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .dm-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1100px) {
+  .dm-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* ----------------------------------- Card ------------------------------------ */
+
+.dm-case-card {
+  position: relative;
+  background: linear-gradient(180deg, #12161f 0%, #0f131b 100%);
+  border: 1px solid #232a38;
+  border-radius: 14px;
+  overflow: hidden;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.35s ease, box-shadow 0.35s ease;
+  will-change: transform;
+}
+
+.dm-case-card:hover,
+.dm-case-card:focus-within {
+  transform: translateY(-6px);
+  border-color: rgba(77, 143, 255, 0.45);
+  box-shadow:
+    0 18px 40px -18px rgba(0, 0, 0, 0.65),
+    0 0 0 1px rgba(77, 143, 255, 0.12),
+    0 0 32px -6px rgba(77, 143, 255, 0.25);
+}
+
+/* Left rack-status beam */
+.dm-case-beam {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 3px;
+  background: linear-gradient(
+    180deg,
+    rgba(77, 143, 255, 0.85) 0%,
+    rgba(139, 124, 246, 0.7) 50%,
+    rgba(61, 217, 180, 0.85) 100%
+  );
+  opacity: 0.45;
+  transition: opacity 0.35s ease, box-shadow 0.35s ease, width 0.35s ease;
+}
+
+.dm-case-card:hover .dm-case-beam,
+.dm-case-card:focus-within .dm-case-beam {
+  opacity: 1;
+  width: 4px;
+  box-shadow: 0 0 18px 1px rgba(77, 143, 255, 0.55);
+}
+
+.dm-case-card-inner {
+  padding: 1.75rem 1.75rem 1.5rem 1.9rem;
+}
+
+/* ---------------------------------- Header ----------------------------------- */
+
+.dm-case-header {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid #1d2330;
+}
+
+.dm-client-type {
+  display: inline-block;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8993a8;
+  background: rgba(139, 147, 168, 0.08);
+  border: 1px solid #232a38;
+  border-radius: 999px;
+  padding: 0.3rem 0.7rem;
+  margin-bottom: 0.85rem;
+}
+
+.dm-case-title {
+  font-family: "Space Grotesk", "Inter", system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 1.25rem;
+  line-height: 1.35;
+  color: #f4f6fb;
+}
+
+/* --------------------------------- Readout ------------------------------------ */
+
+.dm-readout {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  margin-bottom: 1.5rem;
+}
+
+.dm-readout-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.dm-readout-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #c4c9d6;
+}
+
+.dm-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dot-challenge {
+  background: #4d8fff;
+  box-shadow: 0 0 6px 1px rgba(77, 143, 255, 0.7);
+}
+
+.dot-solution {
+  background: #8b7cf6;
+  box-shadow: 0 0 6px 1px rgba(139, 124, 246, 0.7);
+}
+
+.dot-outcome {
+  background: #3dd9b4;
+  box-shadow: 0 0 6px 1px rgba(61, 217, 180, 0.7);
+}
+
+.dm-readout-text {
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: #aab1c2;
+  padding-left: 0.95rem;
+}
+
+/* ----------------------------------- Tags ------------------------------------- */
+
+.dm-tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  padding-top: 1.1rem;
+  border-top: 1px solid #1d2330;
+}
+
+.dm-tag {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  color: #bcd4ff;
+  background: rgba(77, 143, 255, 0.08);
+  border: 1px solid rgba(77, 143, 255, 0.22);
+  border-radius: 6px;
+  padding: 0.32rem 0.6rem;
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease,
+    transform 0.3s ease;
+}
+
+.dm-case-card:hover .dm-tag,
+.dm-case-card:focus-within .dm-tag {
+  border-color: rgba(77, 143, 255, 0.45);
+  box-shadow: 0 0 10px -2px rgba(77, 143, 255, 0.5);
+}
+
+.dm-tag:hover {
+  background: rgba(77, 143, 255, 0.16);
+  transform: translateY(-1px);
+}
+
+/* ------------------------------ Reduced motion -------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .dm-section::before,
+  .dm-case-card,
+  .dm-case-beam,
+  .dm-tag {
+    transition: none !important;
+  }
+}

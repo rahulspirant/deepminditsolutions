@@ -1,0 +1,245 @@
+/* ============================================================
+   TechGridParticles.css
+   
+   Enterprise tech background system — perspective grid,
+   vertical data lines, floating particles, and glow horizon.
+   
+   Colors:
+   - Main: #030712
+   - Grid: rgba(0,136,255,.18)
+   - Particles: #00D4FF
+   - Glow: rgba(0,212,255,.18)
+   - Lines: rgba(0,136,255,.22)
+   
+   Performance: GPU-accelerated, CSS animations only, 60 FPS
+   ============================================================ */
+
+.tech-grid-particles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #030712;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ────────────────────────────────────────────────────────
+   CONTAINER FOR ALL LAYERS
+   ──────────────────────────────────────────────────────── */
+
+.tech-grid-particles::before,
+.tech-grid-particles::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  will-change: transform;
+}
+
+/* ────────────────────────────────────────────────────────
+   LAYER 1: PERSPECTIVE GRID FLOOR
+   ────────────────────────────────────────────────────────
+   Dark blue grid with perspective effect, fading toward horizon.
+   Animated slowly for subtle motion. */
+
+.grid-floor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    linear-gradient(
+      90deg,
+      rgba(0, 136, 255, 0.18) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      rgba(0, 136, 255, 0.18) 1px,
+      transparent 1px
+    );
+  background-size: 60px 60px;
+  background-position: 0 0;
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 30%,
+    black 70%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 30%,
+    black 70%,
+    transparent 100%
+  );
+  opacity: 0.4;
+  animation: grid-drift 40s linear infinite;
+  will-change: background-position;
+}
+
+@keyframes grid-drift {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 60px 120px;
+  }
+}
+
+/* ────────────────────────────────────────────────────────
+   LAYER 2: VERTICAL DATA LINES
+   ────────────────────────────────────────────────────────
+   Hundreds of thin vertical glowing lines with varying
+   heights, opacity, and animation delays. */
+
+.data-lines-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  opacity: 0.6;
+}
+
+.data-line {
+  position: absolute;
+  top: 0;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 136, 255, 0.22) 0%,
+    rgba(0, 136, 255, 0.1) 50%,
+    rgba(0, 136, 255, 0.05) 100%
+  );
+  will-change: height, opacity, animation-delay;
+}
+
+@keyframes float-line {
+  0% {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  10% {
+    opacity: 0.8;
+  }
+  90% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+}
+
+/* ────────────────────────────────────────────────────────
+   LAYER 3: PARTICLE NODES
+   ────────────────────────────────────────────────────────
+   Tiny glowing blue dots floating upward with random
+   delays and sizes. */
+
+.particles-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  bottom: -50px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #00D4FF 0%, rgba(0, 212, 255, 0.6) 70%, transparent 100%);
+  box-shadow: 0 0 8px rgba(0, 212, 255, 0.8), 0 0 16px rgba(0, 212, 255, 0.4);
+  will-change: transform, opacity;
+}
+
+@keyframes float-up {
+  0% {
+    opacity: 0;
+    transform: translateY(0) translateX(0);
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-120vh) translateX(var(--drift, 0px));
+  }
+}
+
+/* ────────────────────────────────────────────────────────
+   LAYER 4: GLOW HORIZON
+   ────────────────────────────────────────────────────────
+   Soft cyan glow near the horizon, very subtle and pulsing. */
+
+.glow-horizon {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 40%;
+  background: radial-gradient(
+    ellipse 100% 40% at 50% 100%,
+    rgba(0, 212, 255, 0.18) 0%,
+    rgba(0, 212, 255, 0.08) 20%,
+    transparent 70%
+  );
+  animation: glow-pulse 8s ease-in-out infinite;
+  will-change: opacity;
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* ────────────────────────────────────────────────────────
+   RESPONSIVE: REDUCE COMPLEXITY ON SMALL SCREENS
+   ──────────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .grid-floor {
+    background-size: 50px 50px;
+    opacity: 0.25;
+  }
+
+  .data-lines-container {
+    opacity: 0.35;
+  }
+
+  .glow-horizon {
+    height: 35%;
+  }
+}
+
+@media (max-width: 480px) {
+  .grid-floor {
+    background-size: 40px 40px;
+    opacity: 0.15;
+  }
+
+  .data-lines-container {
+    opacity: 0.2;
+  }
+
+  .particle {
+    box-shadow: 0 0 4px rgba(0, 212, 255, 0.6), 0 0 8px rgba(0, 212, 255, 0.3);
+  }
+}

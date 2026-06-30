@@ -1,0 +1,125 @@
+/* ==========================================================
+   IndustriesSection.css
+   Orbit glow, pulse rings, and card polish
+   for Deep Mind IT Solutions — Industries Section
+   ========================================================== */
+
+.industries-section {
+  position: relative;
+  isolation: isolate;
+}
+
+/* ---------- Section grid background (disabled) ---------- */
+.industries-grid-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: none;
+}
+
+.industries-grid-bg::before {
+  content: "";
+  position: absolute;
+  inset: -12%;
+  display: none;
+}
+
+/* ---------- Ambient spotlight (disabled) ---------- */
+.industries-spotlight {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: none;
+}
+
+/* ---------- Industry card hover ---------- */
+.industry-card {
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.4s ease, background 0.4s ease, box-shadow 0.4s ease;
+}
+
+.industry-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(94, 184, 255, 0.32);
+  background: rgba(94, 184, 255, 0.045);
+  box-shadow: 0 20px 40px -18px rgba(0, 0, 0, 0.5),
+    0 0 30px -10px rgba(56, 189, 248, 0.2);
+}
+
+/* Radial glow revealed behind card on hover */
+.industry-card-glow {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  opacity: 0;
+  background: radial-gradient(
+    circle at 25% 0%,
+    rgba(56, 189, 248, 0.12),
+    transparent 60%
+  );
+  transition: opacity 0.4s ease;
+}
+
+.industry-card:hover .industry-card-glow {
+  opacity: 1;
+}
+
+/* ---------- Orbit ring behind icon ---------- */
+.industry-icon-wrap {
+  isolation: isolate;
+}
+
+.industry-orbit-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 1px dashed rgba(56, 189, 248, 0.25);
+  animation: orbit-spin 14s linear infinite;
+}
+
+@keyframes orbit-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ---------- Soft pulse ring ---------- */
+.industry-pulse-ring {
+  position: absolute;
+  inset: 6px;
+  border-radius: 9999px;
+  background: rgba(56, 189, 248, 0.12);
+  animation: pulse-ring 3.2s ease-in-out infinite;
+}
+
+@keyframes pulse-ring {
+  0%, 100% { transform: scale(0.85); opacity: 0.5; }
+  50% { transform: scale(1.08); opacity: 0.15; }
+}
+
+/* ---------- Icon lift on hover ---------- */
+.industry-icon {
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease;
+}
+
+.industry-card:hover .industry-icon {
+  transform: scale(1.08);
+  box-shadow: 0 0 16px -2px rgba(56, 189, 248, 0.45);
+}
+
+.industry-card:hover .industry-orbit-ring {
+  border-color: rgba(56, 189, 248, 0.45);
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .industries-grid-bg::before,
+  .industry-card,
+  .industry-icon,
+  .industry-orbit-ring,
+  .industry-pulse-ring,
+  .industry-card-glow {
+    animation: none !important;
+    transition: none !important;
+  }
+}
