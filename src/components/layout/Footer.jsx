@@ -166,7 +166,7 @@ export default function Footer() {
               <li className="dm-footer-contact-item">
                 <span className="dm-footer-contact-marker" aria-hidden="true" />
                 <span>
-                  Support: <a href="tel:+916394333608" className="dm-footer-inline-link">+91 63943 33608</a>
+                  Support: <a href="tel:+917870498996" className="dm-footer-inline-link">+91 7870498996</a>
                 </span>
               </li>
               <li className="dm-footer-contact-item">
