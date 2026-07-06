@@ -84,6 +84,18 @@ export function useCanvasEngine(setup, draw, opts = {}) {
     let dpr = Math.min(window.devicePixelRatio || 1, opts.maxDPR || 2);
     let w = 0, h = 0;
 
+    // Respect users who've asked for reduced motion: draw one static
+    // frame and skip the animation loop entirely.
+    const reduceMotion =
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // Only animate while the canvas is actually visible on screen and the
+    // tab is active. This is the single biggest main-thread cost cut for
+    // pages that stack several of these behind below-the-fold sections.
+    let isVisible = false;
+    let isPageVisible = document.visibilityState !== "hidden";
+
     function resize() {
       w = parent.clientWidth;
       h = parent.clientHeight;
@@ -110,21 +122,61 @@ export function useCanvasEngine(setup, draw, opts = {}) {
     parent.addEventListener("pointerleave", onLeave);
 
     let last = performance.now();
-    function loop(now) {
+    function renderFrame(now) {
       let dt = (now - last) / 1000;
       dt = Math.min(dt, 0.05); // clamp to avoid huge jumps on tab-switch
       last = now;
       ctx.clearRect(0, 0, w, h);
       draw(ctx, w, h, dt, now / 1000, stateRef.current, pointerRef.current);
+    }
+
+    function loop(now) {
+      renderFrame(now);
       rafRef.current = requestAnimationFrame(loop);
     }
-    rafRef.current = requestAnimationFrame(loop);
+
+    function startLoop() {
+      if (rafRef.current || reduceMotion) return;
+      last = performance.now();
+      rafRef.current = requestAnimationFrame(loop);
+    }
+    function stopLoop() {
+      if (!rafRef.current) return;
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
+    function syncLoop() {
+      if (isVisible && isPageVisible && !reduceMotion) startLoop();
+      else stopLoop();
+    }
+
+    if (reduceMotion) {
+      // Paint a single frame so the section isn't blank, then stop.
+      renderFrame(performance.now());
+    }
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+        syncLoop();
+      },
+      { threshold: 0.01 }
+    );
+    io.observe(canvas);
+
+    function onVisibilityChange() {
+      isPageVisible = document.visibilityState !== "hidden";
+      syncLoop();
+    }
+    document.addEventListener("visibilitychange", onVisibilityChange);
 
     return () => {
-      cancelAnimationFrame(rafRef.current);
+      stopLoop();
       ro.disconnect();
+      io.disconnect();
       parent.removeEventListener("pointermove", onMove);
       parent.removeEventListener("pointerleave", onLeave);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

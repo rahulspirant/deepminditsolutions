@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "./TechGridParticles.css";
 
 /**
@@ -30,31 +30,56 @@ import "./TechGridParticles.css";
  */
 
 function TechGridParticles() {
+  // This component is mounted once in App.jsx and stays alive behind
+  // every route, so its DOM/animation cost is paid on every page view.
+  // Counts below are intentionally lower than the original design
+  // (which rendered up to 120 particles + 100 lines = 220 permanently
+  // animating DOM nodes) since the visual difference at these densities
+  // is negligible but the main-thread/compositor cost is not.
+
+  // Pause all CSS animations while the tab is in the background —
+  // the browser mostly does this already, but this also stops us
+  // paying for style recalculation on the (many) animated nodes
+  // when the tab regains focus after being hidden a long time.
+  const [paused, setPaused] = useState(
+    typeof document !== "undefined" && document.hidden
+  );
+  useEffect(() => {
+    const onVisibility = () => setPaused(document.hidden);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => document.removeEventListener("visibilitychange", onVisibility);
+  }, []);
+
+  const reduceMotion =
+    typeof window !== "undefined" &&
+    typeof window.matchMedia === "function" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
   // ─────────────────────────────────────────────────────────────
   // RESPONSIVE PARTICLE COUNT
   // ─────────────────────────────────────────────────────────────
-  // Desktop: ~120 particles
-  // Tablet: ~80 particles
-  // Mobile: ~40 particles
-  
+  // Desktop: 60 particles · Tablet: 40 · Mobile: 20
   const particleCount = useMemo(() => {
-    if (typeof window === "undefined") return 120;
-    
+    if (reduceMotion) return 0;
+    if (typeof window === "undefined") return 60;
+
     const width = window.innerWidth;
-    if (width < 480) return 40;    // Mobile
-    if (width < 768) return 80;    // Tablet
-    return 120;                     // Desktop
+    if (width < 480) return 20;    // Mobile
+    if (width < 768) return 40;    // Tablet
+    return 60;                      // Desktop
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // ─────────────────────────────────────────────────────────────
   // VERTICAL DATA LINES
   // ─────────────────────────────────────────────────────────────
   // Generate vertical lines with varying properties
-  // ~80-120 lines total
+  // 30-50 lines total (was 60-100)
   
   const dataLines = useMemo(() => {
+    if (reduceMotion) return [];
     const lines = [];
-    const lineCount = typeof window !== "undefined" && window.innerWidth < 768 ? 60 : 100;
+    const lineCount = typeof window !== "undefined" && window.innerWidth < 768 ? 30 : 50;
     
     for (let i = 0; i < lineCount; i++) {
       const randomHeight = Math.random() * 60 + 20; // 20-80% height
@@ -102,7 +127,10 @@ function TechGridParticles() {
   }, [particleCount]);
 
   return (
-    <div className="tech-grid-particles" aria-hidden="true">
+    <div
+      className={`tech-grid-particles${paused ? " is-paused" : ""}`}
+      aria-hidden="true"
+    >
       {/* ──────────────────────────────────────────────────────
           LAYER 1: PERSPECTIVE GRID FLOOR
           ────────────────────────────────────────────────────── */}

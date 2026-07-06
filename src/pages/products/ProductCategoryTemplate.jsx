@@ -81,6 +81,9 @@ function BrandCard({ brand, accent, index }) {
             src={brand.image}
             alt={brand.name}
             loading="lazy"
+            decoding="async"
+            width="640"
+            height="360"
             style={{
               width: "100%",
               height: "100%",

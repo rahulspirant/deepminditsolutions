@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Link, useLocation } from "react-router-dom";
 import logo from "../../img/deepmind-logo.png";
+import logoWebp from "../../img/deepmind-logo.webp";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
   Menu, X, ChevronDown, ArrowRight,
@@ -229,11 +230,19 @@ export default function Header() {
         {/* Brand */}
         <Link to="/" className="dm-brand" aria-label="Deep Mind IT Solutions — Home">
           <div className="dm-brand">
-  <img
-    src={logo}
-    alt="DeepMind IT Solutions"
-    className="dm-brand-logo"
-  />
+  <picture>
+    <source srcSet={logoWebp} type="image/webp" />
+    <img
+      src={logo}
+      alt="DeepMind IT Solutions"
+      className="dm-brand-logo"
+      width="127"
+      height="126"
+      loading="eager"
+      decoding="async"
+      fetchPriority="high"
+    />
+  </picture>
 </div>
           <span className="dm-brand-text">
             <span className="dm-brand-name">
@@ -296,7 +305,7 @@ export default function Header() {
         <div className="dm-cta-area">
           <Link to="/contact?type=demo" className="dm-btn dm-btn-ghost">
             <CalendarCheck size={16} strokeWidth={1.8} />
-            <span>Book a Demo</span>
+            <span className="dm-btn-label">Book a Demo</span>
           </Link>
           <Link to="/contact" className="dm-btn dm-btn-primary-sm">
             <PhoneCall size={16} strokeWidth={1.8} />
